@@ -58,6 +58,22 @@ char	*ft_extract_line(char *stash)
 	return (line);
 }
 
+static char	*ft_create_remainder(char *stash, int start, int len)
+{
+	char	*new_stash;
+
+	new_stash = malloc(len + 1);
+	if (!new_stash)
+	{
+		free(stash);
+		return (NULL);
+	}
+	ft_memcpy(new_stash, stash + start, len);
+	new_stash[len] = '\0';
+	free(stash);
+	return (new_stash);
+}
+
 char	*ft_extract_remainder(char *stash)
 {
 	int		i;
@@ -66,6 +82,7 @@ char	*ft_extract_remainder(char *stash)
 
 	if (!stash || !ft_strchr(stash, '\n'))
 	{
+		free(stash);
 		return (NULL);
 	}
 	i = 0;
@@ -74,14 +91,10 @@ char	*ft_extract_remainder(char *stash)
 	len_remainder = ft_strlen(stash) - (i + 1);
 	if (len_remainder <= 0)
 	{
+		free(stash);
 		return (NULL);
 	}
-	new_stash = malloc(len_remainder + 1);
-	if (!new_stash)
-		return (NULL);
-	ft_memcpy(new_stash, stash + i + 1, len_remainder);
-	new_stash[len_remainder] = '\0';
-	free (stash);
+	new_stash = ft_create_remainder(stash, i + 1, len_remainder);
 	return (new_stash);
 }
 
